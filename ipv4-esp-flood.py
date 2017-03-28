@@ -26,6 +26,8 @@ def main():
     parser.add_option("-s", "--spoofed", dest="spoofed", default=False, help="send spoofed source in packets", action="store_true")
     parser.add_option("-v", "--verbose", dest="verbose", default=False, help="print hexdumps of packets to stdout", action="store_true")
     parser.add_option("-o", "--once", dest="once", default=False, help="send packet only once", action="store_true")
+    parser.add_option("-a", "--ah", dest="ah", default=False, help="set esp protocol to ah protocol", action="store_true")
+    parser.add_option("-g", "--gre", dest="gre", default=False, help="set esp protocol to gre protocol", action="store_true")
 
     (options, args) = parser.parse_args()
     
@@ -51,6 +53,11 @@ def main():
     packet.ttl = random.randint(100, 130)
     packet.proto = 50
     
+    if options.ah:
+        packet.proto = 51
+    elif options.gre:
+        packet.proto = 47
+    
     print "[ ] Working ..."
     
     try:
@@ -67,7 +74,7 @@ def main():
                 
             sendp(tosend)
             
-            if True == options.once:
+            if options.once:
                 break
     except KeyboardInterrupt:
         print "[+] Interrupted"
